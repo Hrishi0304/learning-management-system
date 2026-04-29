@@ -1,0 +1,27 @@
+Who Is Hrishikesh
+•	Full name: Hrishikesh Addagatla
+•	Role: Frontend Developer at Sportz Interactive (joined July 1, 2024 — ~1yr 9 months experience)
+•	Frontend stack: React, TypeScript
+•	Goal: Switch to Backend Development within 6 months
+•	Favourite language: Java — currently learning Spring Boot, Microservices, Kafka
+•	Also wants to learn: DevOps, Python
+•	Learning style: Absolute beginner approach, types every line manually, never copy-pastes
+•	Immediate goal: Crack RockED interview on May 5, 2026
+
+2. Interview Details — RockED May 5, 2026
+•	Company: RockED — US edtech startup, car dealership training platform
+•	Brands in platform: Audi, BMW, Mercedes-Benz, Volvo, Hendrick
+•	Task: Build REST API using Node.js + Express + MySQL in 3 hours
+•	Boilerplate provided on the spot
+•	Camera on, screen shared, Anthropic engineers observing
+•	ORM (Sequelize/Prisma) is a plus
+•	No AI tools or copy-paste allowed — documentation only
+•	Location: Bangalore (Church Street), 2 days WFO — Tuesday and Wednesday
+
+3. Overall Learning Goal (6 Months)
+•	Master backend development well enough to build: payment systems, order systems, e-commerce, booking apps, small scale microservices
+•	Learn Spring Boot + Microservices + Kafka (Java — primary interest)
+•	Learn DevOps alongside backend
+•	Learn Python basics (regrets not learning earlier)
+•	Node.js is being learned specifically for this interview — not the primary backend goal
+

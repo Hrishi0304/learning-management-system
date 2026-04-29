@@ -1,0 +1,21 @@
+I Finally received first interview call, I am happy because atleast I got call , and giving hopes that recieve many calls in the future. The role is Node Js Backend Developer, 
+
+Hi Hrishikesh, It was a pleasure speaking with you today.
+I am sharing a few details with you about this role and next steps- if this looks good to you, please acknowledge so that I can make necessary arrangements for your online machine coding round on Tuesday May 05, 2026, 3-6 PM About RockED
+RockED is a fast-growing, product-led US edtech startup, and we’re in that exciting phase where things are moving quickly, the product is scaling, and the team is still small enough for everyone’s work to truly matter. Our engineering crew in India is super strong — folks from IIT, ISB, and people who’ve built at Adobe, Microsoft, Walmart, and more — but the vibe is very startup: high ownership, quick decisions, and zero hierarchy drama.
+We’ve started to build presence in the US: 10,000+ dealerships, 15,000+ certifications completed, 11M+ lesson completions on the platform, working with companies like Audi, BMW, Hendrick, Mercedes-Benz, Volvo… so the momentum is real. Here’s our LinkedIn page for a quick view of our work.
+Our India R&D team, which is in Bangalore (Office in Church Street), leads all product and technology innovation, and we’re now expanding this team. We’re looking for someone who genuinely enjoys being hands-on, loves building, and is excited about where AI is taking the industry.  AI will play a key role in improving intelligence, personalization, and overall user experience across the platform.
+Here’s a short video that will give you a better feel for the vision and the problem we’re solving: https://vimeo.com/988434719?fl=pl&fe=cm
+ Location: Bangalore - 2 days mandatory in office (Tuesday and Wednesday) What is the process? We’re conducting our Online Live Coding Round on Tuesday May 05, 2026, 3-6 PM. It will begin with explaining the question of building API's using NodeJS and MySQL, and then a quick 15-minute Q&A
+Post that, you will be moved to your individual breakout rooms, where your camera will be on, and the screen is shared- while you are coding, our engineers will observe and assist if you’re stuck for the entire 3 hours. The assessment will cover MySQL and Node.js questions, where you will be expected to build an API or an entire backend using Nodejs as a tech stack and MySQL as a DBMS. Boilerplate will be given to you on the spot.  Technical Setup required
+
+* A well-functioning laptop configured to build and run a Node.js API server from scratch (Install Nodejs) 
+* Need a working local MySQL that can be connected to the API server.
+* Use of ORM tools/packages is a plus
+* Do not use any AI tool or plugin for code suggestions. (Can refer to documentation only to know the syntax, but don’t copy-paste code from Google or AI) 
+*  VSCode is allowed, and testing will be local.
+Participating in this drive will complete approximately 80% of your interview process. It helps speed things up and avoids long waiting times between rounds—your entire process will be concluded within a week. If you have already been part of any hiring drive conducted by RockED in the last 6 months, please refrain from joining.The portal automatically rejects profiles that have not completed the cool-off period. Please acknowledge this email, and then I will block your calendar then. Best, Kashish  8427122701 https://www.rocked.us
+
+But, I don't know much in NodeJs,I have done course a long back 2 years ago. Coming to js/ts I have only React experience. 
+I wanted to practice for the interview, they said I will be asked to develop REST API using Express+MySQL in 3 hours.
+

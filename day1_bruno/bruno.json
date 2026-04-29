@@ -1,0 +1,9 @@
+{
+  "version": "1",
+  "name": "Day 1 Express App",
+  "type": "collection",
+  "ignore": [
+    "node_modules",
+    ".git"
+  ]
+}
