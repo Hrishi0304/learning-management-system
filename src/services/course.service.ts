@@ -76,7 +76,7 @@ export class CourseService{
 
         if(error) throw new AppError("Failed to update course",500);
 
-        return this.findById(id); // return the updated ro
+        return this.findById(id); // return the updated row
     }
 
     static async delete(id: number){
