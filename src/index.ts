@@ -11,9 +11,10 @@ const port = process.env.PORT || 3000;
 app.use(express.json());
 
 app.get('/', (req: Request, res: Response) => {
-  // res.json({"message":"Server is ok"});
-   // We are "throwing" a manual error to test our handler
-  throw new AppError("Testing our pro error handler!", 403);
+  res.json({"message":"Server is ok"});
+   
+  // We are "throwing" a manual error to test our handler
+  // throw new AppError("Testing our pro error handler!", 403);
 });
 
 app.use(errorHandler);
