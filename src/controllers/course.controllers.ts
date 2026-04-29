@@ -52,5 +52,5 @@ export async function deleteCourse(req: Request,res: Response,next: NextFunction
     const [delRes,error] = await tryCatch(CourseService.delete(id));
 
     if(error) return next(error);
-    return sendSuccess(res,delRes,"Course deleted sccessfuly");
+    return sendSuccess(res,delRes,"Course deleted successfuly");
 }
