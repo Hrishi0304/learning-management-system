@@ -1,0 +1,68 @@
+Still I have many doubts regaring middleware, btw nice explaination for the first time i understood the middleware.
+
+So, You justify my understanding here.
+
+When we run our backend project using npm run dev
+First express will run our entry file 
+
+index.ts
+. 
+In this file, overall the code has these steps in sequence
+
+1. Configure env
+2. Initialize app and port
+3. Use our first middleware cors() (I think), to provide browser access to our backend.
+4. Then use express.json() middleware to parse incoming request to json, this is because we need parsing any type request to json when we enter req.body in bruno like it might be json,xml,multi-part form, file,binary etc.
+5. Then use routers as middlewares, from here onwards i guess we might write a series of router middlewares if we build an entire production grade application , this is just nothing but defining a crud functions where using tutorials have explaination on this during beginners Node JS lecs.
+6. If routers, then controllers,service then response sucessful then we get response. (do we see middlewares between these layers?)
+7. Last calling error handler middleware.
+
+
+I want explaination, of some things below.
+Here imagine a scenario, we hit this request to our backend server
+POST http://localhost:3000/courses/ to create a resource
+
+1. If request is valid 
+first express app checks route it founds /courses, therefore it calls courseRouter middleware then remaining string comparision is done in router function, here now '/' this is checked with http method. In this file express found this router.post('/', createCourse); and called that controller function here.
+
+Now here, validation always done at controller(which is gatekeeper to our service) not at service layer.
+
+This is because, we don't want invalid request to touch service layer thereby protecting security or some other reason.
+
+if validation is successful then service method call happens and does some business logic, and then if service method is also successful we will get result and send result as success 
+
+then finally here we call res.status(201).json(some json).
+Eventually after success it skips other middlewares below this request i.e router middleware called in index.ts
+
+
+2. If request is failed
+Here error can happen in because of mainly 2 reasons
+i. Invalid request
+ii. Valid request, but data not found/failed to do something kind of error like sometimes database can crash due to this we are unable to get the data.
+
+Based on condition i)
+This is handled by the controller and it straight away calls middleware using next() function by sending AppError object. 
+this next function calls the next middleware after router function which is errorhandler. 
+And inside error handler instance checking happens if it is our AppError, then sendError which eventually sends our unified structured error json.
+
+Here I have 2 doubts
+a. But i don't know why next function is unused here but we defined as parameter in the function 
+
+error-handlers.ts
+. 
+b. How parameters reaching from controller call to middleware call then with 4 params.
+I mean  next(new AppError(result.error.issues[0].message, 400)); to this app.use(errorHandler); and finally this export function errorHandler(err: Error, req: Request, res: Response, next: NextFunction)
+
+Based on condition ii)
+If error not caught in controller but caught and thrown by service. 
+again the same middleware flow call happen by this line 
+if(error) return next(error);
+
+but again same doubt regarding parameters.
+
+3rd case of error is this
+// 2. If it's an unknown error (a bug), log it and send generic 500
+    console.log("ERROR:",err);
+    return sendError(res,"Something went wrong! ",500);
+
+I am not sure when this called, but i can get analogy that we are printing console to check error logs. This might be useful in development to define new error codes and send it programmatically in future.
