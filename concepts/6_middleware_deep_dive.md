@@ -225,29 +225,38 @@ These are two completely separate concerns.
 
 ---
 
-## Complete Request Lifecycle — POST /courses
+## Complete Request Lifecycle — POST /courses (WITH AUTH)
 
 ```
-POST /courses (invalid body — title too short)
+POST /courses (with Authorization: Bearer <token>)
     │
     ▼
-express.json()         → parses body into req.body
-    │ next()
+1. express.json()         → parses body into req.body
+    │ 
     ▼
-courseRouter           → matches /courses, then POST /
-    │ calls
-    ▼
-createCourse()         → safeParse(req.body) → FAILS (title < 3 chars)
+2. courseRouter           → matches /courses, then POST /
     │
-    └─→ next(new AppError("Title must be at least 3 characters", 400))
+    ▼
+3. authenticate()         → THE GUARD 👮
+    │   a. Extracts token from header
+    │   b. Verifies JWT signature & expiry
+    │   c. Attaches payload to req.user (id, email, role)
+    │   d. calls next()
+    │
+    ▼
+4. authorize('instructor') → THE BOUNCER 🕴️
+    │   a. Checks if req.user.role is 'instructor'
+    │   b. If yes → next()
+    │   c. If no → next(AppError 403 Forbidden)
+    │
+    ▼
+5. createCourse()         → Zod validation
+    │
+    ├── Invalid → next(AppError 400) 
+    │
+    └── Valid → CourseService.create()
                 │
-                ▼  Express intercepts, scans for fn.length === 4
-        errorHandler(AppError{...}, req, res, next)
+                ├── DB Error → next(AppError 500)
                 │
-                ▼
-        err instanceof AppError → TRUE
-        sendError(res, "Title must be at least 3 characters", 400)
-                │
-                ▼
-        { success: false, message: "Title must be at least 3 characters" }
+                └── Success → sendSuccess(201) ✅
 ```
