@@ -1,0 +1,26 @@
+meta {
+  name: SignUp
+  type: http
+  seq: 7
+}
+
+post {
+  url: http://localhost:3000/auth/sign-up
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "name": "Hrishikesh",
+    "email": "hrishikesh.0304@gmail.com",
+    "role": "student",
+    "password": "12345678"
+  }
+  
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}
