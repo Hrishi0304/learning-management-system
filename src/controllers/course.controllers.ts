@@ -10,7 +10,6 @@ export async function getAllCourses(req: Request,res: Response,next: NextFunctio
     const [courses,error] = await tryCatch(CourseService.findAll());
     if(error) return next(error);
 
-    const coursesWithNoId = courses.map(({ instructor_id, ...rest }:any) => rest);
     return sendSuccess(res, courses, 'Courses fetched successfully');
 }
 
@@ -46,8 +45,7 @@ export async function updateCourse(req: AuthRequest,res: Response,next: NextFunc
     const [updatedCourse,error] = await tryCatch(CourseService.update(id,result.data));
 
     if(error) return next(error);
-    const {instructor_id,...courseWithoutInstructorId} = updatedCourse;
-    return sendSuccess(res,courseWithoutInstructorId,"Course updated successfully");
+    return sendSuccess(res,updatedCourse,"Course updated successfully");
 }
 
 export async function deleteCourse(req: AuthRequest,res: Response,next: NextFunction){ 
