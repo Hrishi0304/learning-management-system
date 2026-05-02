@@ -3,22 +3,65 @@ import { CreateCourseInput, UpdateCourseInput } from "../schemas/course.schema";
 import { AppError } from "../utils/app-error";
 import { tryCatch } from "../utils/try-catch";
 
+export interface CourseFilters{
+    page?: number;
+    limit?: number;
+    search?: string;
+    instructorId?: number;
+    minPrice?: number;
+    maxPrice?: number;
+}
+
 export class CourseService{
 
-    static async findAll(){
+    static async findAll(filters: CourseFilters = {}){
+        // Set defaults
+        const page = filters.page || 1;
+        const limit = filters.limit || 10;
+        const offset = (page-1)*limit;
 
+        let sqlQuery = `
+            SELECT 
+            c.id,c.instructor_id,c.title,c.description,c.price,
+            c.duration_hours,c.launched_date,c.is_published,
+            c.created_at, 
+            u.name AS instructor_name,
+            u.email AS instructor_email 
+            FROM courses c 
+            JOiN users u on c.instructor_id=u.id
+        `;
+
+        const conditions: string[] = []; // for writing query
+        const queryParams: any[] = []; // for sending query
+
+        if(filters.search){
+            conditions.push("c.title LIKE ?");
+            queryParams.push(`%${filters.search}%`);
+        }
+
+        if(filters.instructorId){
+            conditions.push("c.instructor_id = ?");
+            queryParams.push(filters.instructorId);
+        }
+
+        if(filters.minPrice !== undefined){
+            conditions.push("c.price >= ?");
+            queryParams.push(filters.minPrice);
+        }
+
+        if(filters.maxPrice !== undefined){
+            conditions.push("c.price <= ?");
+            queryParams.push(filters.maxPrice);
+        }
+
+        if(conditions.length>0){
+            sqlQuery += " WHERE " + conditions.join(" AND ");
+        }
+
+        sqlQuery += ` ORDER BY c.created_at DESC LIMIT ? OFFSET ?`;
+        queryParams.push(limit,offset);
         const [data,error] = await tryCatch(
-            pool.query(`
-                SELECT 
-                c.id, c.title,c.description,c.price,
-                c.duration_hours,c.launched_date,c.is_published,
-                c.created_at, 
-                u.name AS instructor_name,
-                u.email AS instructor_email 
-                FROM courses c 
-                JOiN users u on c.instructor_id=u.id
-                ORDER BY created_at DESC
-            `)
+            pool.query(sqlQuery,queryParams)
         );
         if(error){
             throw new AppError('Failed to fetch courses',500);

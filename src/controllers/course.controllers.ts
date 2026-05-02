@@ -7,7 +7,16 @@ import { AppError } from "../utils/app-error";
 import { AuthRequest } from "../middlewares/authenticate";
 
 export async function getAllCourses(req: Request,res: Response,next: NextFunction){
-    const [courses,error] = await tryCatch(CourseService.findAll());
+    const page = parseInt(req.query.page as string) || 1;
+    const limit = parseInt(req.query.limit as string) || 10;
+    const search = req.query.search as string | undefined;
+
+    const instructorId = req.query.instructorId ? parseInt(req.query.instructorId as string) : undefined;
+    const minPrice = req.query.minPrice ? parseFloat(req.query.minPrice as string) : undefined;
+    const maxPrice = req.query.maxPrice ? parseFloat(req.query.maxPrice as string) : undefined;
+
+    const [courses,error] = await tryCatch(CourseService.findAll({page,limit,search,instructorId,minPrice,maxPrice}));
+    
     if(error) return next(error);
 
     return sendSuccess(res, courses, 'Courses fetched successfully');
