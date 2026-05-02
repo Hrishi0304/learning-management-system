@@ -8,9 +8,18 @@ export class CourseService{
     static async findAll(){
 
         const [data,error] = await tryCatch(
-            pool.query('SELECT * FROM courses ORDER BY created_at DESC')
+            pool.query(`
+                SELECT 
+                c.id, c.title,c.description,c.price,
+                c.duration_hours,c.launched_date,c.is_published,
+                c.created_at, 
+                u.name AS instructor_name,
+                u.email AS instructor_email 
+                FROM courses c 
+                JOiN users u on c.instructor_id=u.id
+                ORDER BY created_at DESC
+            `)
         );
-
         if(error){
             throw new AppError('Failed to fetch courses',500);
         }
@@ -21,7 +30,17 @@ export class CourseService{
 
     static async findById(id: number){
         const [data,error] = await tryCatch(
-            pool.query('SELECT * FROM courses WHERE id = ? ',[id])
+            pool.query(`
+                SELECT 
+                c.id, c.title,c.description,c.price,
+                c.duration_hours,c.launched_date,c.is_published,
+                c.created_at, 
+                u.name AS instructor_name,
+                u.email AS instructor_email 
+                FROM courses c 
+                JOiN users u on c.instructor_id=u.id
+                WHERE c.id = ? `
+            ,[id])
         );
 
         if(error){
