@@ -36,10 +36,20 @@ export async function createCourse(req: AuthRequest,res: Response,next: NextFunc
     return sendSuccess(res, course, "Course created successfully",201);
 }
 
-export async function updateCourse(req: Request,res: Response,next: NextFunction){
+export async function updateCourse(req: AuthRequest,res: Response,next: NextFunction){
     const id = Number(req.params.id);
     if(isNaN(id)) return next(new AppError('Invalid course ID',400));
 
+    // 1. Fetch the course first to see who owns it.
+    const [course, fetchError] = await tryCatch(CourseService.findById(id));
+    if(fetchError) return next(fetchError);
+
+    // 2. Check ownership! (Unless they are in admin)
+    if(course.instructor_id !== req.user!.id && req.user!.role !== 'admin'){
+        return next(new AppError("You can only edit your own courses",403));
+    }
+
+    // 3. If they own it, proceed with validation and update...
     const result = updateCourseSchema.safeParse(req.body);
     if (!result.success) return next(new AppError(result.error.issues[0].message, 400));
 
@@ -49,9 +59,19 @@ export async function updateCourse(req: Request,res: Response,next: NextFunction
     return sendSuccess(res,updatedCourse,"Course updated successfully");
 }
 
-export async function deleteCourse(req: Request,res: Response,next: NextFunction){ 
+export async function deleteCourse(req: AuthRequest,res: Response,next: NextFunction){ 
     const id = Number(req.params.id);
     if(isNaN(id)) return next(new AppError('Invalid course ID',400));
+
+
+    // 1. Fetch the course first to see who owns it.
+    const [course, fetchError] = await tryCatch(CourseService.findById(id));
+    if(fetchError) return next(fetchError);
+
+    // 2. Check ownership! (Unless they are in admin)
+    if(course.instructor_id !== req.user!.id && req.user!.role !== 'admin'){
+        return next(new AppError("You can only delete your own courses",403));
+    }
 
     const [delRes,error] = await tryCatch(CourseService.delete(id));
 
