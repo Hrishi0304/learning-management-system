@@ -35,13 +35,13 @@ export class CourseService{
         return course;
     }
 
-    static async create(input: CreateCourseInput){
+    static async create(instructorId: number,input: CreateCourseInput){
         const { title, description, price, duration_hours, is_published, launched_date } = input;
 
         const [data,error] = await tryCatch(
             pool.query(
-                `INSERT INTO courses (title,description,price,duration_hours,is_published,launched_date) VALUES (?, ?, ?, ?, ?, ?)`,
-                [title, description ?? null, price, duration_hours, is_published, launched_date ?? null]
+                `INSERT INTO courses (instructor_id,title,description,price,duration_hours,is_published,launched_date) VALUES (?, ?, ?, ?, ?, ?, ?)`,
+                [instructorId,title, description ?? null, price, duration_hours, is_published, launched_date ?? null]
             )
         );
 
