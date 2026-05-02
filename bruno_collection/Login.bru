@@ -12,9 +12,13 @@ post {
 
 body:json {
   {
-    "email": "rakesh.0304@gmail.com",
+    "email": "nani.0304@gmail.com",
     "password": "12345678"
   }
+}
+
+script:post-response {
+  bru.setVar("token", res.getBody().data.token);
 }
 
 settings {

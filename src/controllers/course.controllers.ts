@@ -9,6 +9,8 @@ import { AuthRequest } from "../middlewares/authenticate";
 export async function getAllCourses(req: Request,res: Response,next: NextFunction){
     const [courses,error] = await tryCatch(CourseService.findAll());
     if(error) return next(error);
+
+    const coursesWithNoId = courses.map(({ instructor_id, ...rest }:any) => rest);
     return sendSuccess(res, courses, 'Courses fetched successfully');
 }
 
@@ -38,41 +40,18 @@ export async function createCourse(req: AuthRequest,res: Response,next: NextFunc
 
 export async function updateCourse(req: AuthRequest,res: Response,next: NextFunction){
     const id = Number(req.params.id);
-    if(isNaN(id)) return next(new AppError('Invalid course ID',400));
-
-    // 1. Fetch the course first to see who owns it.
-    const [course, fetchError] = await tryCatch(CourseService.findById(id));
-    if(fetchError) return next(fetchError);
-
-    // 2. Check ownership! (Unless they are in admin)
-    if(course.instructor_id !== req.user!.id && req.user!.role !== 'admin'){
-        return next(new AppError("You can only edit your own courses",403));
-    }
-
-    // 3. If they own it, proceed with validation and update...
     const result = updateCourseSchema.safeParse(req.body);
     if (!result.success) return next(new AppError(result.error.issues[0].message, 400));
 
     const [updatedCourse,error] = await tryCatch(CourseService.update(id,result.data));
 
     if(error) return next(error);
-    return sendSuccess(res,updatedCourse,"Course updated successfully");
+    const {instructor_id,...courseWithoutInstructorId} = updatedCourse;
+    return sendSuccess(res,courseWithoutInstructorId,"Course updated successfully");
 }
 
 export async function deleteCourse(req: AuthRequest,res: Response,next: NextFunction){ 
     const id = Number(req.params.id);
-    if(isNaN(id)) return next(new AppError('Invalid course ID',400));
-
-
-    // 1. Fetch the course first to see who owns it.
-    const [course, fetchError] = await tryCatch(CourseService.findById(id));
-    if(fetchError) return next(fetchError);
-
-    // 2. Check ownership! (Unless they are in admin)
-    if(course.instructor_id !== req.user!.id && req.user!.role !== 'admin'){
-        return next(new AppError("You can only delete your own courses",403));
-    }
-
     const [delRes,error] = await tryCatch(CourseService.delete(id));
 
     if(error) return next(error);

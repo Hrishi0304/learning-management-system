@@ -8,6 +8,7 @@ import {
 } from '../controllers/course.controllers';
 import { authenticate } from '../middlewares/authenticate';
 import { authorize } from '../middlewares/authorize';
+import { checkCourseOwnership } from '../middlewares/course-guard';
 
 const router = Router();
 
@@ -15,7 +16,7 @@ const router = Router();
 router.get('/',authenticate,getAllCourses);
 router.get('/:id',authenticate, getCourseById);
 router.post('/',authenticate,authorize('admin','instructor'), createCourse);
-router.put('/:id',authenticate,authorize('admin','instructor'), updateCourse);
-router.delete('/:id',authenticate,authorize('admin','instructor'), deleteCourse);
+router.put('/:id',authenticate,checkCourseOwnership, updateCourse);
+router.delete('/:id',authenticate,checkCourseOwnership, deleteCourse);
 
 export default router;

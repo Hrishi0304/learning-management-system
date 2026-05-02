@@ -33,7 +33,7 @@ export class CourseService{
             pool.query(`
                 SELECT 
                 c.id, c.title,c.description,c.price,
-                c.duration_hours,c.launched_date,c.is_published,
+                c.duration_hours,c.instructor_id,c.launched_date,c.is_published,
                 c.created_at, 
                 u.name AS instructor_name,
                 u.email AS instructor_email 
