@@ -1,0 +1,719 @@
+the event Loop is a pretty notorious
+0:01
+Topic in JavaScript but when we zoom out
+0:04
+it's just a tiny component within the
+0:06
+JavaScript runtime we also have the call
+0:08
+stack we have web apis we have the task
+0:10
+q microtask q and then eventually the
+0:13
+event Loop well to be a little more
+0:15
+technically accurate here we actually
+0:17
+have the JavaScript engine in which we
+0:19
+have the call stack and then also the
+0:20
+memory Heap but to keep my slides a
+0:22
+little organized I'll just be showing
+0:24
+the call stack here all these components
+0:26
+together allow us to use asynchronous
+0:28
+tasks in a non-blocking way in
+0:30
+JavaScript and this is important because
+Call Stack
+0:32
+JavaScript itself is single threaded
+0:34
+we're only working with a single call
+0:36
+stack so the call stack manages the
+0:38
+execution of our program so if we have
+0:40
+the following script we first have
+0:42
+console log one so a new execution
+0:44
+context is created pushed onto the call
+0:46
+stack which is then evaluated and logs
+0:48
+one then we have console log two same
+0:50
+story execution context is created
+0:52
+pushed onto the call stack is evaluated
+0:54
+in logs two then on line 14 we invoke
+0:56
+another function the log three and four
+0:58
+and within this function body we invoke
+1:00
+yet another function log three and
+1:02
+within log three we invoke another
+1:04
+function log the console log three
+1:07
+eventually it logs three then on the
+1:09
+second line within the log three and
+1:10
+four function body we console log four
+1:12
+four gets logged and now the log three
+1:14
+and four execution context is popped off
+1:16
+the call stack as well now something
+Single-threaded Problem
+1:18
+important to remember here again is that
+1:20
+JavaScript can handle a single task at a
+1:22
+time so if we for example had this long
+1:25
+running task in which we have a pretty
+1:27
+heavy computation it takes a while
+1:29
+before for JavaScript can continue with
+1:31
+the rest of our program so the console
+1:33
+log long task done is only logged after
+1:36
+a couple seconds and this is not what we
+1:37
+want CU in the meantime our entire
+1:39
+program is frozen so we want to avoid
+1:42
+these long running tasks but in a real
+1:45
+life application we often have to use
+1:47
+these long running tasks like maybe a
+1:49
+network request or anything based on
+1:51
+user input timers so what happens then
+1:53
+like is our entire cost stch just
+1:55
+blocked until we get the data back no
+1:58
+because we're actually using web API in
+2:00
+those cases and web apis provide a set
+Web APIs
+2:02
+of interfaces that allow us to interact
+2:05
+with the browser's features this
+2:06
+includes functionality that we often use
+2:08
+like the document object model fetch set
+2:11
+timeout and so many more the browser is
+2:13
+a very powerful platform with a lot of
+2:15
+features some of these features are
+2:18
+required like the rendering engine or
+2:20
+the networking stack but we also have
+2:22
+access to some cooler ones like device
+2:24
+ones sensors cameras geolocation and so
+2:27
+on okay cool but what this does have to
+2:29
+do with with long running tasks well
+2:31
+some of these web apis allow us to
+2:33
+offload long running tasks to the
+2:36
+browser so when we invoke such an API
+2:38
+we're kind of just initiating that
+2:40
+offloading and web apis that expose
+2:43
+these asynchronous capabilities are
+2:45
+either callback based or promise based
+Callback-based APIs
+2:47
+so first let's focus on the Callback
+2:49
+based apis and I'm just going to use the
+2:51
+geolocation API because it's fun I could
+2:53
+have used any other callback based API
+2:56
+but let's say that we want to get the
+2:57
+user's location and for this we can use
+2:59
+the get current position method exposed
+3:01
+by the geolocation API and this receives
+3:03
+two callbacks first we have the success
+3:05
+call back in case everything goes well
+3:06
+and the user allows us to get the
+3:08
+location and we actually get it from the
+3:10
+browser or the error call back in case
+3:12
+anything goes wrong so let's see what
+3:14
+happens when we actually use this in our
+3:16
+script so first the get current position
+3:18
+invocation gets added to the call stack
+3:21
+however this is just to register those
+3:23
+call backs and initiate that async task
+3:26
+after doing that it can get popped off
+3:27
+the call stack immediately so it doesn't
+3:29
+wait for any data now in the background
+3:31
+the browser starts some kind of process
+3:34
+that eventually shows the user popup now
+3:36
+of course we don't know when the user is
+3:37
+going to interact with this popup but
+3:38
+that's not a problem because this is not
+3:40
+happening on the call stack so our
+3:41
+entire website is still responsive in
+3:43
+case other tasks need to run instead now
+3:46
+finally the user clicks on allow so the
+3:49
+API receives the data from the browser
+3:51
+and uses the success call back to handle
+3:53
+this result however it can't just push
+3:56
+that call back back onto the call stack
+3:58
+this could disrupt an already running
+4:00
+task and just create very unpredictable
+4:02
+Behavior so instead the call back gets
+Task Queue
+4:05
+pushed to the task CU which is also
+4:07
+called the Callback queue for this exact
+4:09
+reason the task CU holds web API
+4:11
+callbacks and event handlers to be able
+4:14
+to get executed at some point later in
+4:16
+the future and this is where we finally
+4:18
+get to the event loop it's the event
+4:20
+Loop's responsibility to check if the
+4:22
+call stack is empty and if that's the
+4:24
+case so if nothing is running and then
+4:26
+gets the first available task from the
+4:28
+task queue and moves this to the call St
+4:30
+where it's executed so now finally we
+4:33
+handle the results and the user's
+4:34
+location is logged to the console
+4:37
+another very popular callback based web
+setTimeout
+4:39
+API is set timeout and set timeout also
+4:42
+receives a call back and a delay so
+4:44
+let's see how that works so first we
+4:46
+encounter a set timeout and this again
+4:48
+gets added to the call stack but all it
+4:50
+does again is register that call back
+4:52
+and also to delay with the timer's API
+4:54
+and in the background the browser will
+4:56
+actually handle that timer then we have
+4:58
+another set timeout and again it
+4:59
+registers the call back and the delay
+5:02
+now our timers are still running and we
+5:03
+have a console log end of script this
+5:06
+just gets added to the call stack and
+5:07
+logs and of script Nothing asynchronous
+5:10
+here now after 100 milliseconds the
+5:12
+browser is like hey 100 milliseconds
+5:14
+expired so now the Callback moves onto
+5:16
+the task Q there's nothing on the call
+5:18
+stack right now so this moves onto the
+5:20
+call stack where eventually it logs 100
+5:23
+milliseconds now 2,000 milliseconds are
+5:25
+up again same story The call back is
+5:27
+pushed onto the testq call stack is
+5:30
+empty so it moves onto the call stack
+5:32
+where it logs 2,000 milliseconds so it's
+5:35
+just very important to remember that
+5:36
+when you have a set timeout and a delay
+5:38
+it's not the delay until it gets moved
+5:40
+onto the call stack no it's the delay
+5:43
+until it gets moved to the task Q so
+5:45
+this means that the delay that we
+5:47
+specify might not actually be the delay
+5:50
+to execution because if the call stack
+5:52
+was still very full with other tasks and
+5:54
+this could run for many more seconds the
+5:57
+call back would still have to wait in
+5:58
+the task cu until the call stack is
+6:00
+empty so just something to to keep in
+6:03
+mind so long story short the call backs
+6:05
+provided by web apis are pushed onto the
+6:08
+test queue when the asynchronous task
+6:10
+completes so what about the
+6:12
+promise-based ones if you haven't
+6:13
+checked out my promises video yet I
+6:15
+highly recommend you watch it because
+6:17
+I'll just assume some basic promise
+6:18
+knowledge uh while explaining this
+6:20
+entire flow whenever we work with
+Microtask Queue
+6:22
+promises we're working with the
+6:24
+microtask Q the microtask queue is a
+6:27
+special queue dedicated to then catch
+6:29
+finally call backs uh a function body
+6:32
+execution after await the Q microtest
+6:35
+call back and the new mutation Observer
+6:37
+call back so only those callbacks or
+6:39
+those function body parts get pushed
+6:41
+onto the microtask CU so it's very
+6:43
+specific however the event Loop
+6:45
+prioritizes the microtask Q so whenever
+6:48
+the call stack is empty the event Loop
+6:50
+first ensures that the microtask Q is
+6:52
+entirely empty so it gets all the tasks
+6:55
+from the microtask Q moves them onto the
+6:57
+call stack where they get executed and
+6:59
+only then will it move to the task que
+7:02
+and after each task in the task CU it
+7:04
+again checks the microtask Q and A
+7:06
+popular promise based web API fetch so
+7:09
+let's see what happens behind the scenes
+7:10
+when we invoke fetch so whenever we call
+7:12
+fetch it's added to the call step this
+7:14
+is just responsible for creating a
+7:16
+promise object which by default is
+7:18
+pending the result is undefined and we
+7:20
+don't have any promise reactions just
+7:22
+yet it also initiates that background
+7:24
+Network request that's handled by the
+7:25
+browser then we move on to the next line
+7:27
+we have the den Handler and this creates
+7:29
+a promise reaction record where we have
+7:31
+res console log res the server still
+7:34
+hasn't responded by the way but we got
+7:35
+to line four so there we have a
+7:37
+synchronous console log end of script so
+7:39
+now end of script is logged to the
+7:41
+console and then finally the server
+7:43
+returns some data so now the promised
+7:45
+data set to fulfilled the promised
+7:47
+results is now the response object with
+7:49
+the data that we got from the server and
+7:51
+the promised reaction Handler is now
+7:53
+also pushed to the microtask Q right
+7:55
+because it's a then call back and that
+7:57
+gets pushed to the microtask Q the call
+8:00
+stack is empty so the event Loop checks
+8:01
+the microtask Q moves this to the call
+8:04
+stack where it eventually logs the
+8:06
+result that we got from the server
+8:08
+something to keep in mind with
+8:09
+microtasks is that a microtask can also
+8:11
+schedule another microtask and this
+8:14
+means that the event Loop is just
+8:15
+constantly handling the microtask and it
+8:17
+can never actually get to the task CU it
+8:20
+would just have to wait indefinitely so
+8:22
+we're kind of creating an infinite Loop
+8:24
+an infinite microtask Loop um freezing
+8:27
+our entire program I believe in node you
+8:29
+can set like Mex tick depth or something
+8:32
+like that which prevents this exact
+8:34
+thing from happening but just make sure
+8:36
+that you don't accidentally end up doing
+8:37
+that and we can also promisify uh a
+Promisifying Callbacks
+8:40
+callback based API so for example we can
+8:42
+rep the get current position with a new
+8:44
+promise Constructor and for the success
+8:46
+call back and the error call back we
+8:48
+just pass resolve and reject so this can
+8:51
+be a pretty nice solution just to
+8:53
+improve the readability within your
+8:55
+codebase a bit all right A little quiz
+Challenge
+8:57
+to see if you uh kind of understand it
+8:59
+so we have a promised resolve with a den
+9:01
+Handler we have a set timeout we have a
+9:03
+Q microtask in which we have another q
+9:06
+microtask and then we have a console log
+9:08
+five it's up to you to see what gets
+9:11
+logged so pause the video now and let's
+9:13
+see if you got it right and the right
+9:15
+answer is
+9:18
+51342 so let's see why first we have the
+9:21
+promise resolve and this just creates a
+9:23
+new promise object that's instantly
+9:25
+resolved then on the next line we have
+9:27
+the den Handler the promise is already
+9:29
+resolved so in the background it does
+9:30
+create that promised reaction but the
+9:32
+Handler is immediately pushed to the
+9:34
+microtask Q then we have set timeout
+9:36
+which is responsible for initiating that
+9:38
+timer so the call back and the delay get
+9:41
+passed to the API and in the background
+9:42
+the browser start some sort of timer
+9:44
+then we have q microtask so the call is
+9:47
+added to the call stack and this cues
+9:48
+that call back to the microtask que then
+9:50
+we have the synchronous cons Log 5 so
+9:52
+this gets push to the call stack and
+9:54
+logs five and in the meantime the 10
+9:56
+milliseconds are up so the call back
+9:58
+from set timeout is pushed to the task Q
+10:01
+cuz this was a call back based API so
+10:03
+task Q our script is done the call stack
+10:05
+is empty so the event Loop checks the
+10:07
+microtas Q and there we have the promise
+10:09
+Handler call back and this eventually
+10:10
+calls console log one so one is logged
+10:13
+to the console then we have the Q
+10:14
+microtask callback and within this
+10:16
+callback we call console log three so
+10:19
+three is locked to the console then we
+10:21
+call another q microtask and this cues
+10:23
+another microtask with it with its call
+10:26
+back to the microtask que however the
+10:28
+event Loop has to to ensure that the
+10:30
+microtask Q is entirely empty before
+10:32
+moving on to the task Q so that call
+10:35
+back is immediately moved onto the call
+10:37
+stack again and logs four now finally
+10:40
+the call stack is empty and the
+10:41
+microtask Q is empty so the first
+10:44
+available task from the task Q is moved
+10:46
+onto the call stack and this eventually
+10:48
+logs two so now we have
+10:51
+51342 so let's just recap what we've
+Recap
+10:54
+covered so far so JavaScript is single
+10:56
+threaded it can only handle one task at
+10:58
+a time we can use web apis to interact
+11:01
+with the features leveraged by the
+11:03
+browser and some of these apis allow us
+11:05
+to initiate Asing tasks in the
+11:08
+background so the function call that
+11:10
+initiates an asnc task like that is
+11:12
+still added to the call stack but this
+11:14
+is just to hand it off to the browser
+11:16
+the actual async task is handled in the
+11:19
+background so it does not block the call
+11:21
+stack the task CU is used by callback
+11:24
+based web apis to enue the Callback once
+11:27
+the asynchronous task has completed
+11:29
+then we have the microtask Q which is
+11:32
+only used by promise handlers the async
+11:34
+function bodies after await the Q
+11:37
+microtask Q callbacks and the new
+11:39
+mutation Observer callbacks this queue
+11:41
+has priority over the task q and the
+11:44
+event Loop ensures that this queue is
+11:46
+entirely empty before moving on to the
+11:48
+task q and after handling each task from
+11:51
+the task Q the event loop again checks
+11:54
+the microtask Q to ensure that nothing
+11:56
+has been added in the meantime you often
+Outro
+11:58
+come across asynchronous JavaScript and
+12:00
+if you aren't entirely sure why things
+12:03
+execute a certain way it might just be
+12:05
+very discouraging but I hope that my
+12:06
+explanation for the task q and the micro
+12:08
+tasq and the event Loop kind of helped
+12:10
+you understand why certain parts of our
+12:13
+code execute at a certain time of course
+12:15
+as always if you have any specific
+12:17
+questions feel free to reach out but I
+12:19
+also highly recommend that you kind of
+12:20
+just play around with it yourself like
+12:22
+try using set timeout try using Q
+12:24
+microtask just to get a better sense of
+12:26
+like oh yeah okay I understand why this
+12:28
+runs at this time time and why this
+12:30
+doesn't execute stuff like that good
+12:32
+luck and have fun coding
+
