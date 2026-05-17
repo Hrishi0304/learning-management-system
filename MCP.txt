@@ -1,0 +1,26 @@
+=========================================
+      MODEL CONTEXT PROTOCOL (MCP)
+=========================================
+
+This repository is integrated with the Model Context Protocol (MCP) to facilitate agentic AI workflows, pair programming, and automated workspace management.
+
+[MCP CONFIGURATION]
+- Server: GitHub Model Context Protocol Server (@modelcontextprotocol/server-github)
+- Active Agent: Antigravity / Gemini
+- Connected Repository: hrishi0304/learning-management-system
+- Main Branch: master
+
+[PURPOSE]
+The Model Context Protocol (MCP) enables LLMs like Gemini/Antigravity to interact securely and productively with this repository. Using the GitHub MCP server, the AI agent can:
+1. Search code and inspect repository structures.
+2. Read, create, and update files.
+3. Manage issues, pull requests, and branches.
+4. Assist with local backend and frontend development tasks.
+
+[DEVELOPER CONTEXT]
+- Owner: Hrishikesh Addagatla
+- Current Focus: Transitioning from Frontend (React/TypeScript) to Backend Development (Java/Spring Boot, Microservices, Kafka).
+- System Purpose: This LMS (Learning Management System) repository tracks the learning journey, interview preparations, and core concepts.
+
+Created automatically via the GitHub MCP Server on 2026-05-17.
+=========================================
